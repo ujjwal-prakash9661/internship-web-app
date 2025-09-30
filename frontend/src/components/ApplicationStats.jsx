@@ -18,6 +18,7 @@ const ApplicationStats = ({ refreshTrigger = 0 }) => {
     const fetchApplicationStats = async () => {
         try {
             setLoading(true);
+            setError(''); // Clear previous errors
             
             // Fetch all statuses to get complete stats
             const [totalResponse, viewedResponse, appliedResponse, bookmarkedResponse] = await Promise.all([
@@ -27,15 +28,40 @@ const ApplicationStats = ({ refreshTrigger = 0 }) => {
                 getUserApplications('bookmarked', 1, 1000)
             ]);
 
+            // Debug logging
+            console.log('Total Response:', totalResponse);
+            console.log('Viewed Response:', viewedResponse);
+            console.log('Applied Response:', appliedResponse);
+            console.log('Bookmarked Response:', bookmarkedResponse);
+
+            // Extract total count with multiple fallback strategies
+            const extractTotal = (response) => {
+                return response?.data?.data?.total || 
+                       response?.data?.total || 
+                       response?.total || 
+                       0;
+            };
+
             setStats({
-                total: totalResponse.data.total || 0,
-                viewed: viewedResponse.data.total || 0,
-                applied: appliedResponse.data.total || 0,
-                bookmarked: bookmarkedResponse.data.total || 0
+                total: extractTotal(totalResponse),
+                viewed: extractTotal(viewedResponse),
+                applied: extractTotal(appliedResponse),
+                bookmarked: extractTotal(bookmarkedResponse)
             });
         } catch (err) {
-            setError('Failed to fetch application stats');
+            const errorMessage = err.response?.data?.message || err.message || 'Failed to fetch application stats';
+            setError(errorMessage);
             console.error('Fetch application stats error:', err);
+            console.error('Error response:', err.response?.data);
+            console.error('Error status:', err.response?.status);
+            
+            // Set default stats on error to prevent crashes
+            setStats({
+                total: 0,
+                viewed: 0,
+                applied: 0,
+                bookmarked: 0
+            });
         } finally {
             setLoading(false);
         }
@@ -44,7 +70,7 @@ const ApplicationStats = ({ refreshTrigger = 0 }) => {
     const statsData = [
         {
             label: 'Total Interactions',
-            value: stats.total,
+            value: stats?.total || 0,
             icon: (
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V8zm0 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z" clipRule="evenodd" />
@@ -55,7 +81,7 @@ const ApplicationStats = ({ refreshTrigger = 0 }) => {
         },
         {
             label: 'Applied',
-            value: stats.applied,
+            value: stats?.applied || 0,
             icon: (
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -66,7 +92,7 @@ const ApplicationStats = ({ refreshTrigger = 0 }) => {
         },
         {
             label: 'Bookmarked',
-            value: stats.bookmarked,
+            value: stats?.bookmarked || 0,
             icon: (
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
@@ -77,7 +103,7 @@ const ApplicationStats = ({ refreshTrigger = 0 }) => {
         },
         {
             label: 'Viewed Only',
-            value: stats.viewed - stats.applied - stats.bookmarked,
+            value: Math.max(0, (stats?.viewed || 0) - (stats?.applied || 0) - (stats?.bookmarked || 0)),
             icon: (
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
@@ -138,7 +164,7 @@ const ApplicationStats = ({ refreshTrigger = 0 }) => {
                     
                     <div>
                         <p className="text-2xl font-bold text-gray-900 mb-1">
-                            {stat.value.toLocaleString()}
+                            {(stat.value || 0).toLocaleString()}
                         </p>
                         <p className="text-sm text-gray-600">
                             {stat.label}

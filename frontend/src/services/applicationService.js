@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://internship-web-app-42i2.onrender.com';
+const API_URL = import.meta.env.VITE_API_URL || 'https://internship-web-app-42i2.onrender.com/api';
 
 const api = axios.create({
-    baseURL: `${API_URL}/api/applications`,
+    baseURL: `${API_URL}/applications`,
     headers: {
         'Content-Type': 'application/json',
     },
