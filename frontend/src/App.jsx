@@ -4,7 +4,6 @@ import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import Profile from './pages/Profile'
 import Register from './pages/Register'
-import Settings from './pages/Settings'
 import RecommendedInternships from './pages/RecommendedInternships'
 import MyApplications from './pages/MyApplications'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -25,7 +24,6 @@ const App = () => {
           <Route element={<ProtectedRoute />}>
             <Route path='/dashboard' element={<Dashboard />}/>
             <Route path='/profile' element={<Profile />}/>
-            <Route path='/settings' element={<Settings />}/>
             <Route path='/recommended' element={<RecommendedInternships />}/>
             <Route path='/applications' element={<MyApplications />}/>
           </Route>

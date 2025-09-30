@@ -152,12 +152,6 @@ const Navbar = () => {
                     >
                         Profile
                     </Link>
-                    <Link 
-                        to="/settings" 
-                        className="text-gray-700 hover:text-blue-600 font-medium transition duration-300"
-                    >
-                        Settings
-                    </Link>
                 </div>
 
                 {/* Desktop Search Bar - Hidden on mobile */}
@@ -344,13 +338,6 @@ const Navbar = () => {
                                 onClick={() => setMobileMenuOpen(false)}
                             >
                                 Profile
-                            </Link>
-                            <Link 
-                                to="/settings" 
-                                className="block text-gray-700 hover:text-blue-600 font-medium py-2 transition duration-300"
-                                onClick={() => setMobileMenuOpen(false)}
-                            >
-                                Settings
                             </Link>
                         </div>
 
