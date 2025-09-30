@@ -28,7 +28,7 @@ const Login = () => {
         setLoading(true);
         
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/auth/login`, {email, password});
+            const response = await axios.post(`${import.meta.env.VITE_API_URL || 'https://internship-web-app-42i2.onrender.com/api'}/auth/login`, {email, password});
             login(response.data.user, response.data.token);
             navigate('/dashboard');
         } catch(err) {
@@ -39,7 +39,7 @@ const Login = () => {
     }
 
     const handleGitHubLogin = () => {
-        window.location.href = `${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/auth/github`
+        window.location.href = `${import.meta.env.VITE_API_URL || 'https://internship-web-app-42i2.onrender.com/api'}/auth/github`
     }
     
     return (

@@ -14,13 +14,13 @@ async function authMiddleware(req, res, next)
             console.log("Extracted token:", token ? "Present" : "Missing");
 
             const decode = jwt.verify(token, process.env.JWT_SECRET)
-            console.log("Token decoded successfully, user ID:", decode.id)
+            console.log("Token decoded successfully, user ID:", decode.userId || decode.id)
 
-            req.user = await userModel.findById(decode.id).select('-password');
+            req.user = await userModel.findById(decode.userId || decode.id).select('-password');
 
             if(!req.user)
             {
-                console.log("User not found in database for ID:", decode.id);
+                console.log("User not found in database for ID:", decode.userId || decode.id);
                 return res.status(401).json({
                     message : "User not found"
                 })
