@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Local GitHub Skills Fix Test</title>
+</head>
+<body>
+    <h1>Local GitHub Skills Fix Test</h1>
+    <button onclick="fixSkills()">Fix Empty Skills (Local)</button>
+    <button onclick="checkUsers()">Check Users (Local)</button>
+    <div id="result"></div>
+
+    <script>
+        async function fixSkills() {
+            document.getElementById('result').innerHTML = 'Fixing skills on local server...';
+            try {
+                const response = await fetch('http://localhost:3000/api/github/fix-empty-skills', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                document.getElementById('result').innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            } catch (error) {
+                document.getElementById('result').innerHTML = 'Error: ' + error.message;
+            }
+        }
+
+        async function checkUsers() {
+            document.getElementById('result').innerHTML = 'Checking users on local server...';
+            try {
+                const response = await fetch('http://localhost:3000/api/github/debug/users');
+                const data = await response.json();
+                document.getElementById('result').innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            } catch (error) {
+                document.getElementById('result').innerHTML = 'Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
