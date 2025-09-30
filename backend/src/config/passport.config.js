@@ -61,13 +61,11 @@ passport.use(new GitHubStrategy({
             user.avatar = profile.photos?.[0]?.value || user.avatar;
             user.githubUsername = profile.username || user.githubUsername;
             
-            // Refresh skills if they're empty or if it's been a while since last update
-            if (!user.skills || user.skills.length === 0) {
-                console.log('🔍 User has no skills, fetching from GitHub...');
-                const githubSkills = await fetchGitHubSkills(profile.username);
-                user.skills = githubSkills;
-                console.log(`✅ Updated user skills: ${githubSkills.length} skills found`);
-            }
+            // ALWAYS refresh skills from GitHub on every login to ensure they're up-to-date
+            console.log('🔍 Refreshing skills from GitHub repositories...');
+            const githubSkills = await fetchGitHubSkills(profile.username);
+            user.skills = githubSkills;
+            console.log(`✅ Updated user skills: ${githubSkills.length} skills found`);
             
             await user.save();
             return done(null, user);
